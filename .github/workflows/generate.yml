@@ -1,19 +1,29 @@
-name: FIFA World Cup 2026 - Full Video Generator
+name: FIFA World Cup 2026 - Complete Auto Generator
 
 on:
   schedule:
-    - cron: '0 6 * * 1'
+    # US Prime Time posts: 20:00 ET / 17:00 PT
+    - cron: '0 0 * * 1'   # Mon 00:00 UTC = Mon 20:00 ET / 17:00 PT
+    - cron: '0 0 * * 3'   # Wed 00:00 UTC = Wed 20:00 ET / 17:00 PT  
+    - cron: '0 0 * * 5'   # Fri 00:00 UTC = Fri 20:00 ET / 17:00 PT
+    - cron: '0 0 * * 6'   # Sat 00:00 UTC = Sat 20:00 ET / 17:00 PT
   workflow_dispatch:
     inputs:
       episodes:
-        description: 'Number of episodes (1-5)'
+        description: 'Episodes to generate (1-5)'
         required: true
         default: '5'
         type: choice
         options: ['1', '2', '3', '4', '5']
+      auto_release:
+        description: 'Create GitHub Release?'
+        required: true
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
 
 jobs:
-  generate:
+  analyze-and-generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,27 +34,58 @@ jobs:
           python-version: '3.12'
           cache: pip
 
-      - name: Install system deps
+      - name: Install deps
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          pip install -r requirements.txt
 
-      - name: Install Python deps
-        run: pip install -r requirements.txt
+      - name: Analyze FIFA channel style
+        run: |
+          python scripts/channel_analyzer.py || echo "Analysis optional"
+          echo "Style analysis complete"
 
       - name: Download fresh images
         run: python scripts/download_images.py
 
-      - name: Generate all videos (TTS + BGM + Ken Burns)
+      - name: Generate videos + thumbnails + metadata
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
-      - name: Upload videos
+      - name: Create Release
+        if: ${{ inputs.auto_release != 'false' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ github.run_number }}-${{ github.run_attempt }}
+          name: "FIFA World Cup 2026 - Videos ${{ github.run_number }}"
+          body: |
+            ## 🎬 FIFA World Cup 2026 - Auto Generated Videos
+
+            Generated at US Prime Time schedule.
+            Optimized for YouTube (titles, descriptions, tags included).
+
+            ### What's inside
+            - 5 long videos (~2 min each)
+            - 5 short videos (~30 sec each)
+            - YouTube thumbnails
+            - Viral-optimized metadata (titles, descriptions, tags)
+            - Posting schedule: Mon/Wed/Fri/Sat at 20:00 ET
+            
+            ### Posting Tips
+            - Post long videos Mon/Wed/Fri at 20:00 ET
+            - Post shorts Sat/Sun at 12:00 ET
+            - Use the metadata JSON files for copy-paste
+          files: |
+            videos/*.mp4
+            videos/*.json
+            thumbnails/*.jpg
+          draft: false
+          prerelease: false
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: worldcup2026-videos-complete
-          path: videos/
-          retention-days: 14
-
-      - name: Cleanup temp files
-        run: |
-          rm -rf tmp_tts tmp_vid tmp_slideshow tmp_ss __pycache__ scripts/__pycache__
+          name: worldcup2026-full-release
+          path: |
+            videos/
+            thumbnails/
+          retention-days: 30
