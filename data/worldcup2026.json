@@ -1,8 +1,8 @@
 {
   "tournament": {
     "name": "FIFA World Cup 2026",
-    "hosts": ["SHBA", "Meksik\u00eb", "Kanada"],
-    "dates": "11 Qershor - 19 Korrik 2026",
+    "hosts": ["USA", "Mexico", "Canada"],
+    "dates": "June 11 - July 19, 2026",
     "teams": 48,
     "matches": 104,
     "stadiums": 16
@@ -10,56 +10,56 @@
   "episodes": [
     {
       "id": 1,
-      "title": "Kupa e Bot\u00ebs 2026",
-      "subtitle": "Bot\u00ebrori m\u00eb i madh n\u00eb histori",
+      "title": "FIFA World Cup 2026",
+      "subtitle": "The biggest World Cup ever",
       "script": [
-        "Mir\u00eb se vini n\u00eb FIFA World Cup 2026. Ky \u00ebsht\u00eb bot\u00ebrori i par\u00eb me 48 skuadra, i organizuar nga tre vende: Shtetet e Bashkuara, Meksika dhe Kanadaja. Gjithsej 104 ndeshje n\u00eb 16 stadiume. Nj\u00eb turne q\u00eb do t\u00eb hyj\u00eb n\u00eb histori.",
-        "Tre vende prit\u00ebse, tre kultura t\u00eb ndryshme. Nga rrug\u00ebt e New York-ut deri tek piramidat e Meksik\u00ebs. Ky bot\u00ebror premton spektak\u00ebl t\u00eb papar\u00eb.",
-        "P\u00ebr her\u00eb t\u00eb par\u00eb, 48 komb\u00ebtare luftojn\u00eb p\u00ebr kup\u00ebn m\u00eb t\u00eb \u00e7muar. Formati i ri sjell m\u00eb shum\u00eb ndeshje, m\u00eb shum\u00eb emocione dhe m\u00eb shum\u00eb yje."
+        "Welcome to FIFA World Cup 2026. This is the first World Cup with 48 teams, hosted by three nations: the United States, Mexico and Canada. A total of 104 matches across 16 stadiums. A tournament that will make history.",
+        "Three host nations, three different cultures. From the streets of New York to the pyramids of Mexico. This World Cup promises an unforgettable spectacle.",
+        "For the first time, 48 nations compete for the most coveted trophy in sports. The new format brings more matches, more excitement, and more stars than ever before."
       ],
       "tags": ["worldcup2026", "fifa", "football", "worldcup"]
     },
     {
       "id": 2,
-      "title": "Stadiumet e Bot\u00ebrorit 2026",
-      "subtitle": "16 tempuj t\u00eb futbollit",
+      "title": "World Cup 2026 Stadiums",
+      "subtitle": "16 temples of football",
       "script": [
-        "16 stadiume moderne n\u00eb tre vende presin ndeshjet e Bot\u00ebrorit 2026. Nga MetLife Stadium n\u00eb Nju Jork, deri tek Azteca Stadium n\u00eb Mexico City, secili stadium ka historin\u00eb e vet.",
-        "MetLife Stadium \u00ebsht\u00eb m\u00eb i madhi me 82 mij\u00eb vende. Atje do t\u00eb luhet finalja e madhe e 19 Korrikut. SoFi Stadium n\u00eb Los Angeles dhe AT&T Stadium n\u00eb Dallas jan\u00eb gjithashtu gati.",
-        "Kanada sjell BC Place n\u00eb Vancouver dhe BMO Field n\u00eb Toronto. Meksika krenohet me Estadio Azteca, nj\u00eb nga stadiumet m\u00eb ikonike n\u00eb bot\u00eb."
+        "16 modern stadiums across three countries host the World Cup 2026 matches. From MetLife Stadium in New York to Azteca Stadium in Mexico City, each venue has its own story.",
+        "MetLife Stadium is the largest with 82,000 seats. The grand final on July 19th will be played there. SoFi Stadium in Los Angeles and AT&T Stadium in Dallas are also ready to host.",
+        "Canada brings BC Place in Vancouver and BMO Field in Toronto. Mexico proudly presents Estadio Azteca, one of the most iconic stadiums in world football."
       ],
       "tags": ["stadiums", "2026worldcup", "usa", "mexico", "canada"]
     },
     {
       "id": 3,
-      "title": "Yjet e Bot\u00ebrorit 2026",
-      "subtitle": "Lojtar\u00ebt m\u00eb t\u00eb mir\u00eb n\u00eb bot\u00eb",
+      "title": "Stars of World Cup 2026",
+      "subtitle": "The best players on the planet",
       "script": [
-        "Yjet m\u00eb t\u00eb m\u00ebdhenj t\u00eb futbollit takohen n\u00eb 2026. Vinicius Junior, ylli brazilian i Real Madrid, \u00ebsht\u00eb nj\u00eb nga favorit\u00ebt p\u00ebr top golash\u00ebnues. Shpejt\u00ebsia dhe teknika e tij jan\u00eb t\u00eb jasht\u00ebzakonshme.",
-        "Kylian Mbappe vjen si kampioni i Franc\u00ebs. Jude Bellingham udh\u00ebheq Anglin\u00eb. Lautaro Martinez mban shpresat e Argjentin\u00ebs. Lamine Yamal, talenti i ri i Spanj\u00ebs, premton spektak\u00ebl.",
-        "Neymar, Salah, De Bruyne, Haaland... yjet nuk mbarojn\u00eb kurr\u00eb. Ky bot\u00ebror do t\u00eb jet\u00eb skena m\u00eb e madhe p\u00ebr talentet m\u00eb t\u00eb m\u00ebdha."
+        "The biggest stars of world football meet in 2026. Vinicius Junior, Brazil's Real Madrid star, is one of the favorites for the golden boot. His speed and technique are extraordinary.",
+        "Kylian Mbappe arrives as France's champion. Jude Bellingham leads England. Lautaro Martinez carries Argentina's hopes. Lamine Yamal, Spain's young talent, promises magic.",
+        "Neymar, Salah, De Bruyne, Haaland... the stars never end. This World Cup is the biggest stage for the greatest talents."
       ],
       "tags": ["players", "stars", "mbappe", "vinicius", "bellingham"]
     },
     {
       "id": 4,
-      "title": "Tifoz\u00ebt e Bot\u00ebrorit",
-      "subtitle": "Pasioni q\u00eb bashkon bot\u00ebn",
+      "title": "World Cup Fans",
+      "subtitle": "The passion that unites the world",
       "script": [
-        "Miliona tifoz\u00eb nga e gjith\u00eb bota mbushin stadiumet dhe sheshet. Tre vende organizatore, tre kultura t\u00eb ndryshme, nj\u00eb pasion i p\u00ebrbashk\u00ebt: futbolli.",
-        "Nga rrug\u00ebt e Mexico City deri tek sheshet e Nju Jorkut, atmosfera \u00ebsht\u00eb elektrike. Tifoz\u00ebt brazilian\u00eb, argjentinas, gjerman\u00eb, japonez\u00eb... t\u00eb gjith\u00eb t\u00eb bashkuar n\u00eb nj\u00eb fest\u00eb.",
-        "Fansat krijojn\u00eb spektaklin. K\u00ebng\u00ebt, vallet, flamujt dhe emocionet e b\u00ebjn\u00eb \u00e7do ndeshje unike. Pa tifoz\u00ebt, futbolli nuk do t\u00eb ishte i nj\u00ebjt\u00eb."
+        "Millions of fans from around the world fill stadiums and public squares. Three host nations, three different cultures, one shared passion: football.",
+        "From the streets of Mexico City to the squares of New York, the atmosphere is electric. Brazilian, Argentine, German, Japanese fans... all united in one giant celebration.",
+        "The fans create the spectacle. The songs, the dances, the flags and the emotions make every match unique. Without the fans, football would never be the same."
       ],
       "tags": ["fans", "supporters", "atmosphere", "passion"]
     },
     {
       "id": 5,
-      "title": "Fantastike 2026",
-      "subtitle": "Momente q\u00eb nuk harrohen",
+      "title": "Fantastic 2026",
+      "subtitle": "Moments to remember forever",
       "script": [
-        "Golat, spektakli, emocionet. FIFA World Cup 2026 na dhuron momente t\u00eb paharrueshme. Nga ndeshjet hap\u00ebse deri n\u00eb finale, \u00e7do moment ka r\u00ebnd\u00ebsi.",
-        "Kush do ta ngrej\u00eb kup\u00ebn? Argjentina p\u00ebr t\u00eb mbrojtur titullin? Franca p\u00ebr t\u00eb dominuar? Brazili p\u00ebr t'u rikthyer? Apo nj\u00eb surpriz\u00eb si Maroku?",
-        "Faleminderit q\u00eb ndjek\u00ebt k\u00ebt\u00eb bot\u00ebror t\u00eb jasht\u00ebzakonsh\u00ebm. Subscribe p\u00ebr m\u00eb shum\u00eb analiza, momente dhe ekskluzivitete nga FIFA World Cup 2026!"
+        "The goals, the spectacle, the emotions. FIFA World Cup 2026 gives us unforgettable moments. From the opening matches to the final, every moment matters.",
+        "Who will lift the trophy? Argentina to defend the title? France to dominate again? Brazil to return to glory? Or a surprise like Morocco?",
+        "Thank you for watching this incredible World Cup. Subscribe for more analysis, highlights and exclusives from FIFA World Cup 2026!"
       ],
       "tags": ["highlights", "goals", "final", "champion"]
     }

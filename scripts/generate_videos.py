@@ -29,7 +29,7 @@ def load_images():
         if os.path.splitext(f)[1].lower() in exts
     ])
 
-def gen_tts(text, output, voice="sq-AL-IlirNeural"):
+def gen_tts(text, output, voice="en-US-ChristopherNeural"):
     asyncio.run(__import__("edge_tts").Communicate(text, voice=voice).save(output))
     return output
 
@@ -209,8 +209,8 @@ def main():
     count = min(int(args.count), 5)
 
     print("=" * 55)
-    print("FIFA World Cup 2026 - Channel Style Generator")
-    print("Follows FIFA Preview Series format")
+    print("FIFA World Cup 2026 - Auto Video Generator")
+    print("Inspired by FIFA Preview Series")
     print("=" * 55)
 
     data = load_data()
@@ -252,7 +252,7 @@ def main():
 
             # Add FIFA-style lower third overlay
             styled_vid = os.path.join(TTS_DIR, f"styled_{eid}_{seg_idx}.mp4")
-            add_fifa_style_overlay(raw_vid, styled_vid, [title, f"{ep_name} | Analiza"])
+            add_fifa_style_overlay(raw_vid, styled_vid, [title, f"{ep_name} | Analysis"])
 
             # Add title card at start
             titled_vid = os.path.join(TTS_DIR, f"titled_{eid}_{seg_idx}.mp4")
@@ -332,6 +332,7 @@ def main():
     shutil.rmtree(TTS_DIR, ignore_errors=True)
     print(f"\n{'=' * 55}")
     print(f"All videos ready in {VIDEOS_DIR}!")
+    print(f"Subscribe for more FIFA World Cup 2026 content!")
     print(f"{'=' * 55}")
 
 if __name__ == "__main__":
