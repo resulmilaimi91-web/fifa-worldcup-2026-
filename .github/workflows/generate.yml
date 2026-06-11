@@ -1,4 +1,4 @@
-name: FIFA World Cup 2026 - Video Generator
+name: FIFA World Cup 2026 - Full Video Generator
 
 on:
   schedule:
@@ -10,12 +10,7 @@ on:
         required: true
         default: '5'
         type: choice
-        options:
-          - '1'
-          - '2'
-          - '3'
-          - '4'
-          - '5'
+        options: ['1', '2', '3', '4', '5']
 
 jobs:
   generate:
@@ -29,20 +24,27 @@ jobs:
           python-version: '3.12'
           cache: pip
 
-      - name: Install deps
+      - name: Install system deps
         run: |
-          pip install -r requirements.txt
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
 
-      - name: Download images
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+
+      - name: Download fresh images
         run: python scripts/download_images.py
 
-      - name: Generate videos
+      - name: Generate all videos (TTS + BGM + Ken Burns)
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
       - name: Upload videos
         uses: actions/upload-artifact@v4
         with:
-          name: worldcup2026-videos
+          name: worldcup2026-videos-complete
           path: videos/
-          retention-days: 7
+          retention-days: 14
+
+      - name: Cleanup temp files
+        run: |
+          rm -rf tmp_tts tmp_vid tmp_slideshow tmp_ss __pycache__ scripts/__pycache__

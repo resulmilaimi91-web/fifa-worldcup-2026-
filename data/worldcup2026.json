@@ -1,0 +1,42 @@
+{
+  "tournament": {
+    "name": "FIFA World Cup 2026",
+    "hosts": ["SHBA", "Meksikë", "Kanada"],
+    "dates": "11 Qershor - 19 Korrik 2026",
+    "teams": 48,
+    "matches": 104,
+    "stadiums": 16
+  },
+  "episodes": [
+    {
+      "id": 1,
+      "title": "Kupa e Botës 2026",
+      "subtitle": "Botërori më i madh në histori",
+      "script": "Mirë se vini në FIFA World Cup 2026. Ky është botërori i parë me 48 skuadra, i organizuar nga tre vende: Shtetet e Bashkuara, Meksika dhe Kanadaja. Gjithsej 104 ndeshje në 16 stadiume. Një turne që do të hyjë në histori."
+    },
+    {
+      "id": 2,
+      "title": "Stadiumet e Botërorit",
+      "subtitle": "16 tempuj të futbollit",
+      "script": "16 stadiume moderne në tre vende presin ndeshjet e Botërorit 2026. Nga MetLife Stadium në Nju Jork, deri tek Azteca Stadium në Mexico City. Stadiumi më i madh është MetLife me 82 mijë vende. Kanada sjell stadiume moderne si BC Place në Vancouver."
+    },
+    {
+      "id": 3,
+      "title": "Yjet e Botërorit",
+      "subtitle": "Lojtaret më të mirë në botë",
+      "script": "Yjet më të mëdhenj të futbollit takohen në 2026. Lojtare si Vinicius Junior, Kylian Mbappe, Jude Bellingham dhe shumë të tjerë. Gjenerata e re e futbollistëve premton spektakël. Ja cilët janë lojtarët kryesorë për tu ndjekur."
+    },
+    {
+      "id": 4,
+      "title": "Tifozët e Botërorit",
+      "subtitle": "Pasioni që bashkon botën",
+      "script": "Miliona tifozë nga e gjithë bota mbushin stadiumet dhe sheshet. Tre vende organizatore, tre kultura të ndryshme, një pasion i përbashkët: futbolli. Nga rrugët e Mexico City deri tek sheshet e Nju Jorkut, atmosfera është elektrike."
+    },
+    {
+      "id": 5,
+      "title": "Fantastike 2026",
+      "subtitle": "Momente që nuk harrohen",
+      "script": "Golat, spektakli, emocionet. FIFA World Cup 2026 na dhuron momente të paharrueshme. Nga ndeshjet hapëse deri në finale, çdo moment ka rëndësi. Faleminderit që ndjekët këtë botëror të jashtëzakonshëm. Subscribe për më shumë!"
+    }
+  ]
+}
