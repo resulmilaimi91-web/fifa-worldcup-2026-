@@ -1,0 +1,8 @@
+client_secret.json
+youtube_token.json
+youtube_token.pickle
+tmp_tts/
+tmp_seg/
+tmp_cat/
+__pycache__/
+*.pyc
