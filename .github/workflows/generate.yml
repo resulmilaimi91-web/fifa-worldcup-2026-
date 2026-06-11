@@ -21,6 +21,12 @@ on:
         default: 'true'
         type: choice
         options: ['true', 'false']
+      upload_youtube:
+        description: 'Upload to YouTube? (disable if channel blocked)'
+        required: true
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
 
 permissions:
   contents: write
@@ -55,6 +61,7 @@ jobs:
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
       - name: Upload to YouTube (Premiere)
+        if: ${{ inputs.upload_youtube == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
