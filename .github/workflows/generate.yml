@@ -2,11 +2,11 @@ name: FIFA World Cup 2026 - Complete Auto Generator
 
 on:
   schedule:
-    # US Prime Time posts: 20:00 ET / 17:00 PT
-    - cron: '0 0 * * 1'   # Mon 00:00 UTC = Mon 20:00 ET / 17:00 PT
-    - cron: '0 0 * * 3'   # Wed 00:00 UTC = Wed 20:00 ET / 17:00 PT  
-    - cron: '0 0 * * 5'   # Fri 00:00 UTC = Fri 20:00 ET / 17:00 PT
-    - cron: '0 0 * * 6'   # Sat 00:00 UTC = Sat 20:00 ET / 17:00 PT
+    # Upload 1h before prime time, premiere at 00:00 UTC
+    - cron: '0 23 * * 0'   # Sun 23:00 UTC = upload, premiere Mon 00:00 UTC (20:00 ET Sun)
+    - cron: '0 23 * * 2'   # Tue 23:00 UTC = upload, premiere Wed 00:00 UTC (20:00 ET Tue)
+    - cron: '0 23 * * 4'   # Thu 23:00 UTC = upload, premiere Fri 00:00 UTC (20:00 ET Thu)
+    - cron: '0 23 * * 5'   # Fri 23:00 UTC = upload, premiere Sat 00:00 UTC (20:00 ET Fri)
   workflow_dispatch:
     inputs:
       episodes:
@@ -54,19 +54,27 @@ jobs:
       - name: Generate videos + thumbnails + metadata
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
-      - name: Upload to YouTube
+      - name: Upload to YouTube (Premiere)
         if: ${{ env.YT_CLIENT_ID != '' && env.YT_CLIENT_SECRET != '' && env.YT_REFRESH_TOKEN != '' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
         run: |
+          # Premiere at next midnight UTC (20:00 ET / 17:00 PT)
+          PUBLISH_AT=$(date -u -d 'next midnight 00:00:00' +%Y-%m-%dT%H:%M:%SZ)
           for meta in videos/worldcup2026_episodi_*_metadata.json; do
             eid=$(echo "$meta" | grep -oP '\d+')
             video="videos/worldcup2026_episodi_${eid}.mp4"
+            short="videos/worldcup2026_episodi_${eid}_short.mp4"
             if [ -f "$video" ]; then
-              echo "Uploading episode $eid..."
-              python scripts/upload_youtube.py --video "$video" --metadata "$meta" --privacy public
+              echo "Uploading episode $eid (premiere at $PUBLISH_AT)..."
+              python scripts/upload_youtube.py --video "$video" --metadata "$meta" --publish-at "$PUBLISH_AT"
+            fi
+            if [ -f "$short" ]; then
+              short_meta="videos/worldcup2026_episodi_${eid}_metadata.json"
+              echo "Uploading short $eid..."
+              python scripts/upload_youtube.py --video "$short" --metadata "$short_meta" --privacy public
             fi
           done
 
