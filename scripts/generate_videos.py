@@ -21,6 +21,13 @@ def ffmpeg():
     except Exception:
         return "ffmpeg"
 
+def run_ff(cmd, timeout=120):
+    r = subprocess.run(cmd, capture_output=True, timeout=timeout)
+    if r.returncode != 0:
+        err = r.stderr.decode("utf-8", errors="replace")[-500:]
+        print(f"  FFmpeg ERROR (ret={r.returncode}): {err[:200]}")
+    return r
+
 def load_data():
     with open(DATA_FILE, encoding="utf-8") as f:
         return json.load(f)
@@ -36,9 +43,8 @@ def gen_tts(text, output, voice="en-US-ChristopherNeural"):
     asyncio.run(__import__("edge_tts").Communicate(text, voice=voice).save(output))
 
 def gen_bg_music(output, duration_sec):
-    ff = ffmpeg()
-    subprocess.run([
-        ff, "-y",
+    run_ff([
+        ffmpeg(), "-y",
         "-f", "lavfi", "-i", f"anoisesrc=d={duration_sec}:c=pink:a=0.35",
         "-f", "lavfi", "-i", f"sine=frequency=110:duration={duration_sec}",
         "-f", "lavfi", "-i", f"sine=frequency=165:duration={duration_sec}",
@@ -49,14 +55,14 @@ def gen_bg_music(output, duration_sec):
         "[a][b]amix=inputs=2:duration=first[ab];"
         "[ab][c]amix=inputs=2:duration=first",
         "-ac", "1", "-ar", "22050", output
-    ], capture_output=True, timeout=120)
+    ], timeout=120)
 
 def prep_image(src, dst, w=W, h=H):
-    subprocess.run([
+    run_ff([
         ffmpeg(), "-y", "-i", src,
         "-vf", f"scale={w}:{h}:force_original_aspect_ratio=1,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black",
         "-qscale:v", "2", dst
-    ], capture_output=True, timeout=60)
+    ], timeout=60)
 
 def make_ken_burns_segment(images, output, duration_per_img=3.5):
     ff = ffmpeg()
@@ -75,26 +81,36 @@ def make_ken_burns_segment(images, output, duration_per_img=3.5):
         dur = duration_per_img + 0.3
         cmd = [
             ff, "-y", "-loop", "1", "-i", img,
-            "-vf", f"fps={FPS},zoompan=z='min(zoom+0.002,1.06)':d={int(FPS*dur)}:s={W}x{H}:fps={FPS}",
+            "-vf", f"fps={FPS},zoompan=z=min(zoom+0.002,1.06):d={int(FPS*dur)}:s={W}x{H}:fps={FPS}",
             "-c:v", "libx264", "-t", str(dur),
             "-pix_fmt", "yuv420p", "-preset", "fast", "-crf", "23", out
         ]
-        subprocess.run(cmd, capture_output=True, timeout=120)
-        segs.append(out)
+        r = run_ff(cmd, timeout=120)
+        if r.returncode == 0:
+            segs.append(out)
+        else:
+            print(f"  WARN: zoompan failed for img {i}, skipping")
+
+    if not segs:
+        print(f"  ERROR: no valid segments created for {output}")
+        return
 
     concat = os.path.join(tmp, "c.txt")
     with open(concat, "w") as f:
         for s in segs:
             f.write(f"file '{os.path.abspath(s)}'\n")
-    subprocess.run([
+    run_ff([
         ff, "-y", "-f", "concat", "-safe", "0",
         "-i", concat, "-c", "copy", output
-    ], capture_output=True, timeout=300)
+    ], timeout=300)
     shutil.rmtree(tmp, ignore_errors=True)
 
 def add_lower_third(input_video, output_video, text_lines):
-    """FIFA-style: black bar 80px + white/gold text"""
     ff = ffmpeg()
+    if not os.path.exists(input_video):
+        print(f"  WARN: {input_video} missing, skipping lower third")
+        shutil.copy(input_video, output_video) if os.path.exists(input_video) else None
+        return
     f = [f"drawbox=x=0:y=ih-80:w=iw:h=80:color=black@0.65:t=fill"]
     bold_font = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
     reg_font = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
@@ -104,14 +120,19 @@ def add_lower_third(input_video, output_video, text_lines):
         ft = bold_font if i == 0 else reg_font
         c = "gold" if i == 0 else "white"
         f.append(f"drawtext=text='{escaped}':fontfile={ft}:fontsize={fs}:fontcolor={c}:x=30:y={H-65+i*30}")
-    subprocess.run([
+    r = run_ff([
         ff, "-y", "-i", input_video,
         "-vf", ",".join(f),
         "-c:v", "libx264", "-preset", "fast", "-crf", "23", output_video
-    ], capture_output=True, timeout=300)
+    ], timeout=300)
+    if r.returncode != 0 and os.path.exists(input_video):
+        shutil.copy(input_video, output_video)
 
 def add_title_card(input_video, output_video, title, subtitle=None):
     ff = ffmpeg()
+    if not os.path.exists(input_video):
+        print(f"  WARN: {input_video} missing, skipping title card")
+        return
     f = [
         "drawbox=x=0:y=0:w=iw:h=ih:color=black@0.55:t=fill",
         f"drawtext=text='{title.replace(':', '\\:')}':fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf:fontsize=56:fontcolor=gold:x=(w-text_w)/2:y=(h-text_h)/2-40:box=1:boxcolor=black@0.4:boxborderw=15"
@@ -120,25 +141,30 @@ def add_title_card(input_video, output_video, title, subtitle=None):
         f.append(
             f"drawtext=text='{subtitle.replace(':', '\\:')}':fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:fontsize=32:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2+30"
         )
-    subprocess.run([
+    r = run_ff([
         ff, "-y", "-i", input_video,
         "-vf", ",".join(f),
         "-c:v", "libx264", "-preset", "fast", "-crf", "23", output_video
-    ], capture_output=True, timeout=300)
+    ], timeout=300)
+    if (r.returncode != 0 or not os.path.exists(output_video)) and os.path.exists(input_video):
+        shutil.copy(input_video, output_video)
 
 def concat_videos(video_list, output):
     ff = ffmpeg()
+    existing = [v for v in video_list if os.path.exists(v)]
+    if not existing:
+        print(f"  WARN: no videos to concat for {output}")
+        return
     tmp = os.path.join(BASE, "tmp_cat")
     os.makedirs(tmp, exist_ok=True)
     cf = os.path.join(tmp, "c.txt")
     with open(cf, "w") as f:
-        for v in video_list:
-            if os.path.exists(v):
-                f.write(f"file '{os.path.abspath(v)}'\n")
-    subprocess.run([
+        for v in existing:
+            f.write(f"file '{os.path.abspath(v)}'\n")
+    run_ff([
         ff, "-y", "-f", "concat", "-safe", "0",
         "-i", cf, "-c", "copy", output
-    ], capture_output=True, timeout=300)
+    ], timeout=300)
     shutil.rmtree(tmp, ignore_errors=True)
 
 def mix_audio(tts_file, bgm_file, output, duration=None):
@@ -152,9 +178,11 @@ def mix_audio(tts_file, bgm_file, output, duration=None):
     if duration:
         cmd += ["-t", str(duration)]
     cmd.append(output)
-    subprocess.run(cmd, capture_output=True, timeout=120)
+    run_ff(cmd, timeout=120)
 
 def get_duration(file_path):
+    if not os.path.exists(file_path):
+        return 0
     ff = ffmpeg()
     r = subprocess.run([ff, "-i", file_path, "-f", "null", "-"],
                        capture_output=True, text=True, timeout=60)
@@ -166,11 +194,10 @@ def get_duration(file_path):
     return 0
 
 def make_thumbnail(images, output, title_text, episode_label):
-    """Create YouTube-style thumbnail with text overlay"""
     ff = ffmpeg()
     img = images[0] if images else os.path.join(IMAGES_DIR, os.listdir(IMAGES_DIR)[0])
     escaped = title_text.replace(":", "\\:").replace("'", "\\\\'")
-    subprocess.run([
+    run_ff([
         ff, "-y", "-i", img,
         "-vf",
         f"scale=1280:720:force_original_aspect_ratio=1,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=black,"
@@ -180,10 +207,9 @@ def make_thumbnail(images, output, title_text, episode_label):
         f"drawtext=text='{episode_label}':fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf:"
         f"fontsize=28:fontcolor=white:x=(w-text_w)/2:y=h*0.8:box=1:boxcolor=black@0.6:boxborderw=8",
         "-qscale:v", "2", output
-    ], capture_output=True, timeout=60)
+    ], timeout=60)
 
 def generate_metadata(ep, eid):
-    """Generate viral-optimized YouTube title, description, tags"""
     titles = [
         f"FIFA World Cup 2026 | {ep['title']}",
         f"{ep['title']} - FIFA World Cup 2026 Preview",
@@ -254,12 +280,16 @@ def main():
             make_ken_burns_segment(seg_imgs, raw)
 
             styled = os.path.join(TTS_DIR, f"sty_{eid}_{seg_idx}.mp4")
-            add_lower_third(raw, styled, [title, f"{ep_name} | World Cup 2026"])
+            if os.path.exists(raw):
+                add_lower_third(raw, styled, [title, f"{ep_name} | World Cup 2026"])
 
             titled = os.path.join(TTS_DIR, f"til_{eid}_{seg_idx}.mp4")
-            add_title_card(styled, titled, title, subtitle)
+            used = styled if os.path.exists(styled) else raw
+            add_title_card(used, titled, title, subtitle)
 
-            video_segments.append(titled)
+            final_seg = titled if os.path.exists(titled) else (styled if os.path.exists(styled) else raw)
+            if os.path.exists(final_seg):
+                video_segments.append(final_seg)
             total_imgs += len(seg_imgs)
 
         concat_vid = os.path.join(TTS_DIR, f"cat_{eid}.mp4")
@@ -285,9 +315,8 @@ def main():
                 for ts in tts_segs:
                     if os.path.exists(ts):
                         f.write(f"file '{os.path.abspath(ts)}'\n")
-            subprocess.run([ffmpeg(), "-y", "-f", "concat", "-safe", "0",
-                           "-i", cf, "-c", "copy", tts_all],
-                          capture_output=True, timeout=120)
+            run_ff([ffmpeg(), "-y", "-f", "concat", "-safe", "0",
+                   "-i", cf, "-c", "copy", tts_all], timeout=120)
 
             bgm = os.path.join(TTS_DIR, f"bgm_{eid}.mp3")
             gen_bg_music(bgm, max(vid_dur, 30))
@@ -296,32 +325,32 @@ def main():
             mix_audio(tts_all, bgm, mixed, vid_dur)
 
             final_long = os.path.join(VIDEOS_DIR, f"worldcup2026_episodi_{eid}.mp4")
-            subprocess.run([
+            run_ff([
                 ffmpeg(), "-y", "-i", concat_vid, "-i", mixed,
                 "-c:v", "copy", "-c:a", "aac", "-b:a", "128k",
                 "-shortest", final_long
-            ], capture_output=True, timeout=300)
+            ], timeout=300)
             print(f"  [LONG] {final_long}")
 
         # Short
         short_vid = os.path.join(TTS_DIR, f"short_{eid}.mp4")
-        if video_segments:
+        if video_segments and os.path.exists(video_segments[0]):
             shutil.copy(video_segments[0], short_vid)
         else:
             make_ken_burns_segment(images[:6], short_vid, 2.5)
 
-        if tts_segs:
+        if tts_segs and os.path.exists(short_vid):
             sa = os.path.join(TTS_DIR, f"aud_s_{eid}.mp3")
             bgm_s = os.path.join(TTS_DIR, f"bgm_s_{eid}.mp3")
             gen_bg_music(bgm_s, 30)
             mix_audio(tts_segs[0], bgm_s, sa, 30)
 
             final_short = os.path.join(VIDEOS_DIR, f"worldcup2026_episodi_{eid}_short.mp4")
-            subprocess.run([
+            run_ff([
                 ffmpeg(), "-y", "-i", short_vid, "-i", sa,
                 "-c:v", "copy", "-c:a", "aac", "-b:a", "128k",
                 "-shortest", final_short
-            ], capture_output=True, timeout=300)
+            ], timeout=300)
             print(f"  [SHORT] {final_short}")
 
         # Generate metadata
