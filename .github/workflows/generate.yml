@@ -22,6 +22,9 @@ on:
         type: choice
         options: ['true', 'false']
 
+permissions:
+  contents: write
+
 jobs:
   analyze-and-generate:
     runs-on: ubuntu-latest
