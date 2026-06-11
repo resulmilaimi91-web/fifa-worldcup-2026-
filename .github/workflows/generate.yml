@@ -54,6 +54,22 @@ jobs:
       - name: Generate videos + thumbnails + metadata
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
+      - name: Upload to YouTube
+        if: ${{ env.YT_CLIENT_ID != '' && env.YT_CLIENT_SECRET != '' && env.YT_REFRESH_TOKEN != '' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          for meta in videos/worldcup2026_episodi_*_metadata.json; do
+            eid=$(echo "$meta" | grep -oP '\d+')
+            video="videos/worldcup2026_episodi_${eid}.mp4"
+            if [ -f "$video" ]; then
+              echo "Uploading episode $eid..."
+              python scripts/upload_youtube.py --video "$video" --metadata "$meta" --privacy public
+            fi
+          done
+
       - name: Create Release
         if: ${{ inputs.auto_release != 'false' }}
         uses: softprops/action-gh-release@v2
