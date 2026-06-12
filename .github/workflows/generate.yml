@@ -2,11 +2,13 @@ name: FIFA World Cup 2026 - Complete Auto Generator
 
 on:
   schedule:
-    # Upload 1h before prime time, premiere at 00:00 UTC
-    - cron: '0 23 * * 0'   # Sun 23:00 UTC = upload, premiere Mon 00:00 UTC (20:00 ET Sun)
-    - cron: '0 23 * * 2'   # Tue 23:00 UTC = upload, premiere Wed 00:00 UTC (20:00 ET Tue)
-    - cron: '0 23 * * 4'   # Thu 23:00 UTC = upload, premiere Fri 00:00 UTC (20:00 ET Thu)
-    - cron: '0 23 * * 5'   # Fri 23:00 UTC = upload, premiere Sat 00:00 UTC (20:00 ET Fri)
+    # Random minutes to avoid detection, premiere at varying times
+    - cron: '17 13 * * 0'   # Sun 13:17 UTC
+    - cron: '42 15 * * 2'   # Tue 15:42 UTC
+    - cron: '8 11 * * 4'    # Thu 11:08 UTC
+    - cron: '33 9 * * 5'    # Fri 09:33 UTC
+    - cron: '55 19 * * 1'   # Mon 19:55 UTC
+    - cron: '21 7 * * 3'    # Wed 07:21 UTC
   workflow_dispatch:
     inputs:
       episodes:
@@ -60,32 +62,55 @@ jobs:
       - name: Generate videos + thumbnails + metadata
         run: python scripts/generate_videos.py ${{ inputs.episodes || '5' }}
 
-      - name: Upload to YouTube (Premiere)
+      - name: Upload to YouTube (Anti-Ban Mode)
         if: ${{ inputs.upload_youtube == 'true' }}
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          CHANNEL_NAME: ${{ secrets.CHANNEL_NAME }}
         run: |
           if [ -z "$YT_CLIENT_ID" ] || [ -z "$YT_CLIENT_SECRET" ] || [ -z "$YT_REFRESH_TOKEN" ]; then
             echo "YouTube secrets not set. Skipping upload."
             exit 0
           fi
-          # Premiere at next midnight UTC (20:00 ET / 17:00 PT)
-          PUBLISH_AT=$(python3 -c "from datetime import datetime, timezone, timedelta; now = datetime.now(timezone.utc); next_mid = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1); print(next_mid.strftime('%Y-%m-%dT%H:%M:%SZ'))")
+
+          # Randomize premiere time: between 8h and 48h from now, random hour
+          RANDOM_HOUR=$((RANDOM % 12 + 8))
+          RANDOM_MINUTE=$((RANDOM % 60))
+          RANDOM_DAY_OFFSET=$((RANDOM % 2 + 1))
+          PUBLISH_AT=$(python3 -c "from datetime import datetime, timezone, timedelta; import random; now = datetime.now(timezone.utc); offset = timedelta(days=${RANDOM_DAY_OFFSET}, hours=${RANDOM_HOUR}, minutes=${RANDOM_MINUTE}); dt = now + offset; print(dt.strftime('%Y-%m-%dT%H:%M:%SZ'))")
+          echo "Scheduled premiere window: $PUBLISH_AT"
+
+          i=0
           for meta in videos/worldcup2026_episodi_*_metadata.json; do
             eid=$(echo "$meta" | grep -oP '\d+')
             video="videos/worldcup2026_episodi_${eid}.mp4"
             short="videos/worldcup2026_episodi_${eid}_short.mp4"
+
+            # Random jitter: 30-180s between each upload
+            JITTER=$((RANDOM % 150 + 30))
+            
             if [ -f "$video" ]; then
-              echo "Uploading episode $eid (premiere at $PUBLISH_AT)..."
-              python scripts/upload_youtube.py --video "$video" --metadata "$meta" --publish-at "$PUBLISH_AT"
+              echo "Uploading episode $eid (jitter ${JITTER}s)..."
+              python scripts/upload_youtube.py \
+                --video "$video" \
+                --metadata "$meta" \
+                --publish-at "$PUBLISH_AT" \
+                --jitter $JITTER \
+                ${CHANNEL_NAME:+--channel-name "$CHANNEL_NAME"}
             fi
+
             if [ -f "$short" ]; then
-              short_meta="videos/worldcup2026_episodi_${eid}_metadata.json"
               echo "Uploading short $eid..."
-              python scripts/upload_youtube.py --video "$short" --metadata "$short_meta" --privacy public
+              python scripts/upload_youtube.py \
+                --video "$short" \
+                --metadata "$meta" \
+                --privacy public \
+                --jitter $((RANDOM % 60 + 10))
             fi
+
+            i=$((i + 1))
           done
 
       - name: Create Release

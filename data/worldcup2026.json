@@ -11,6 +11,14 @@
     {
       "id": 1,
       "title": "FIFA World Cup 2026",
+      "title_options": [
+        "FIFA World Cup 2026 - The Biggest Tournament Ever",
+        "World Cup 2026: 48 Teams, 3 Nations, 1 Trophy",
+        "FIFA World Cup 2026: History in the Making",
+        "2026 World Cup - The Ultimate Preview",
+        "World Cup 2026: USA, Mexico & Canada United"
+      ],
+      "description": "FIFA World Cup 2026 is here! 48 teams, 3 host nations, 104 matches across 16 stadiums. The biggest sporting event on the planet. From the streets of New York to the pyramids of Mexico.",
       "subtitle": "The biggest World Cup ever",
       "script": [
         "Welcome to FIFA World Cup 2026. This is the first World Cup with 48 teams, hosted by three nations: the United States, Mexico and Canada. A total of 104 matches across 16 stadiums. A tournament that will make history.",
@@ -22,6 +30,14 @@
     {
       "id": 2,
       "title": "World Cup 2026 Stadiums",
+      "title_options": [
+        "World Cup 2026 Stadiums - 16 Iconic Venues",
+        "FIFA World Cup 2026: Inside the Stadiums",
+        "2026 World Cup Stadiums Tour - USA, Mexico, Canada",
+        "World Cup 2026: The Most Epic Stadiums Ever",
+        "16 Stadiums, 3 Countries, One World Cup"
+      ],
+      "description": "Explore the 16 incredible stadiums hosting FIFA World Cup 2026 across USA, Mexico and Canada. From MetLife Stadium to Estadio Azteca, each venue tells a story.",
       "subtitle": "16 temples of football",
       "script": [
         "16 modern stadiums across three countries host the World Cup 2026 matches. From MetLife Stadium in New York to Azteca Stadium in Mexico City, each venue has its own story.",
@@ -33,6 +49,14 @@
     {
       "id": 3,
       "title": "Stars of World Cup 2026",
+      "title_options": [
+        "Stars of World Cup 2026 - The Best Players",
+        "World Cup 2026: Mbappe, Vinicius & More",
+        "Top 10 Players to Watch in World Cup 2026",
+        "FIFA World Cup 2026: Superstars Ready to Shine",
+        "2026 World Cup Stars - Who Will Dominate?"
+      ],
+      "description": "The biggest stars of world football meet in 2026. Vinicius Junior, Kylian Mbappe, Jude Bellingham and more. Who will be the hero of this World Cup?",
       "subtitle": "The best players on the planet",
       "script": [
         "The biggest stars of world football meet in 2026. Vinicius Junior, Brazil's Real Madrid star, is one of the favorites for the golden boot. His speed and technique are extraordinary.",
@@ -44,6 +68,14 @@
     {
       "id": 4,
       "title": "World Cup Fans",
+      "title_options": [
+        "World Cup Fans - The Passion That Unites Us",
+        "FIFA World Cup 2026: Fans Around the World",
+        "2026 World Cup: The Most Passionate Fans",
+        "World Cup 2026 Atmosphere - Unforgettable Moments",
+        "The Heart of World Cup 2026: The Fans"
+      ],
+      "description": "Millions of fans from around the world fill stadiums and public squares. Three host nations, one shared passion: football. The atmosphere is electric at FIFA World Cup 2026.",
       "subtitle": "The passion that unites the world",
       "script": [
         "Millions of fans from around the world fill stadiums and public squares. Three host nations, three different cultures, one shared passion: football.",
@@ -55,6 +87,14 @@
     {
       "id": 5,
       "title": "Fantastic 2026",
+      "title_options": [
+        "FIFA World Cup 2026 - Moments to Remember",
+        "World Cup 2026: The Best Moments So Far",
+        "2026 World Cup Highlights - Unforgettable",
+        "FIFA World Cup 2026: Magic in Every Match",
+        "The Greatest World Cup Ever? 2026 Highlights"
+      ],
+      "description": "The goals, the spectacle, the emotions. FIFA World Cup 2026 gives us unforgettable moments. From the opening match to the final, every moment matters.",
       "subtitle": "Moments to remember forever",
       "script": [
         "The goals, the spectacle, the emotions. FIFA World Cup 2026 gives us unforgettable moments. From the opening matches to the final, every moment matters.",
